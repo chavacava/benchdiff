@@ -1,10 +1,12 @@
 # benchcmp
-benchcmp displays performance changes between benchmarks
 
-This is a fork of [`golang/tools/cmd/benchcmp`](https://github.com/golang/tools/tree/master/cmd/benchcmp) 
+`benchcmp` displays performance changes between benchmarks
+
+This is a fork and **drop in replacement** of [`golang/tools/cmd/benchcmp`](https://github.com/golang/tools/tree/master/cmd/benchcmp) 
+
 It adds the following functionalities:
 
-* Returns error code != 0 if there are deltas between the benchmarks
+* Can be configured to return error code != 0 if there are positive deltas (performance regressions) between the benchmarks
 * Allows to set tolerance of deltas
 
 ## Usage
@@ -37,22 +39,48 @@ benchcmp will also compare memory allocations.
 ```
 
 ## Examples
+
+Replacement of `golang/tools/cmd/benchcmp`
+
 ```
-$ benchcomp ./fixtures/example1.new ./fixtures/example1.old
+$ benchcomp -best ./fixtures/example1.old ./fixtures/example1.new
+benchmark                    old ns/op     new ns/op     delta
+BenchmarkConcatString-4      148           143           -3.38%
+BenchmarkConcatBuffer-4      8.78          8.91          +1.48%
+BenchmarkConcatBuilder-4     2.82          2.81          -0.35%
+
+benchmark                    old allocs     new allocs     delta
+BenchmarkConcatString-4      0              0              +0.00%
+BenchmarkConcatBuffer-4      0              0              +0.00%
+BenchmarkConcatBuilder-4     0              0              +0.00%
+
+benchmark                    old bytes     new bytes     delta
+BenchmarkConcatString-4      530           530           +0.00%
+BenchmarkConcatBuffer-4      2             2             +0.00%
+BenchmarkConcatBuilder-4     2             2             +0.00%
+$ echo $?
+0
+```
+
+Fail on positive deltas (performance regressions)
+
+```
+$ benchcomp -errdelta ./fixtures/example1.old ./fixtures/example1.new
 benchmark                   old ns/op     new ns/op     delta
-BenchmarkConcatString-4     143           148           +3.50%
-benchcmp: +3.50% ns/op delta between benchmarks
+BenchmarkConcatString-4     148           143           -3.38%
+BenchmarkConcatBuffer-4     8.78          8.91          +1.48%
+benchcmp: +1.48% ns/op delta between benchmarks
 $ echo $?
 1
 ```
-Set a tolerance of 5% for deltas of ns/op
+Set a tolerance of 2% for deltas of ns/op
 
 ```
-$ benchcomp -tnsop 5  ./fixtures/example1.new ./fixtures/example1.old
+$ benchcomp -errdelta -tnsop 2  ./fixtures/example1.old ./fixtures/example1.new
 benchmark                    old ns/op     new ns/op     delta
-BenchmarkConcatString-4      143           148           +3.50%
-BenchmarkConcatBuffer-4      8.91          8.78          -1.46%
-BenchmarkConcatBuilder-4     2.81          2.82          +0.36%
+BenchmarkConcatString-4      148           143           -3.38%
+BenchmarkConcatBuffer-4      8.78          8.91          +1.48%
+BenchmarkConcatBuilder-4     2.82          2.81          -0.35%
 
 benchmark                    old allocs     new allocs     delta
 BenchmarkConcatString-4      0              0              +0.00%
