@@ -86,9 +86,14 @@ func (d Delta) Float64() float64 {
 	}
 }
 
-// Percent formats a Delta as a percent change, ranging from -100% up.
-func (d Delta) Percent() string {
+// PercentAsStr formats a Delta as a percent change, ranging from -100% up.
+func (d Delta) PercentAsStr() string {
 	return fmt.Sprintf("%+.2f%%", 100*d.Float64()-100)
+}
+
+// Percent returns a Delta as a percent, ranging from -100% up
+func (d Delta) Percent() float64 {
+	return 100*d.Float64() - 100
 }
 
 // Multiple formats a Delta as a multiplier, ranging from 0.00x up.

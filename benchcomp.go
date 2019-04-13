@@ -76,7 +76,12 @@ func main() {
 				fmt.Fprint(w, "benchmark\told ns/op\tnew ns/op\tdelta\n")
 				header = true
 			}
-			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", cmp.Name(), formatNs(cmp.Before.NsPerOp), formatNs(cmp.After.NsPerOp), delta.Percent())
+			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", cmp.Name(), formatNs(cmp.Before.NsPerOp), formatNs(cmp.After.NsPerOp), delta.PercentAsStr())
+
+			if delta.Percent() > 0 {
+				w.Flush()
+				fatal(fmt.Sprintf("benchcmp: %s ns/op delta between benchmarks", delta.PercentAsStr()))
+			}
 		}
 	}
 
@@ -94,6 +99,11 @@ func main() {
 				header = true
 			}
 			fmt.Fprintf(w, "%s\t%.2f\t%.2f\t%s\n", cmp.Name(), cmp.Before.MBPerS, cmp.After.MBPerS, delta.Multiple())
+
+			if delta.Percent() > 0 {
+				w.Flush()
+				fatal(fmt.Sprintf("benchcmp: %s Mb/s delta between benchmarks", delta.PercentAsStr()))
+			}
 		}
 	}
 
@@ -110,7 +120,12 @@ func main() {
 				fmt.Fprint(w, "\nbenchmark\told allocs\tnew allocs\tdelta\n")
 				header = true
 			}
-			fmt.Fprintf(w, "%s\t%d\t%d\t%s\n", cmp.Name(), cmp.Before.AllocsPerOp, cmp.After.AllocsPerOp, delta.Percent())
+			fmt.Fprintf(w, "%s\t%d\t%d\t%s\n", cmp.Name(), cmp.Before.AllocsPerOp, cmp.After.AllocsPerOp, delta.PercentAsStr())
+
+			if delta.Percent() > 0 {
+				w.Flush()
+				fatal(fmt.Sprintf("benchcmp: %s allocs/op delta between benchmarks", delta.PercentAsStr))
+			}
 		}
 	}
 
@@ -127,7 +142,12 @@ func main() {
 				fmt.Fprint(w, "\nbenchmark\told bytes\tnew bytes\tdelta\n")
 				header = true
 			}
-			fmt.Fprintf(w, "%s\t%d\t%d\t%s\n", cmp.Name(), cmp.Before.AllocedBytesPerOp, cmp.After.AllocedBytesPerOp, cmp.DeltaAllocedBytesPerOp().Percent())
+			fmt.Fprintf(w, "%s\t%d\t%d\t%s\n", cmp.Name(), cmp.Before.AllocedBytesPerOp, cmp.After.AllocedBytesPerOp, cmp.DeltaAllocedBytesPerOp().PercentAsStr())
+
+			if delta.Percent() > 0 {
+				w.Flush()
+				fatal(fmt.Sprintf("benchcmp: %s bytes/op delta between benchmarks", delta.PercentAsStr))
+			}
 		}
 	}
 }

@@ -1,0 +1,8 @@
+goos: linux
+goarch: amd64
+pkg: github.com/chavacava/benchcomp/fixtures
+BenchmarkConcatString-4    	10000000	       148 ns/op	     530 B/op	       0 allocs/op
+BenchmarkConcatBuffer-4    	200000000	         8.78 ns/op	       2 B/op	       0 allocs/op
+BenchmarkConcatBuilder-4   	1000000000	         2.82 ns/op	       2 B/op	       0 allocs/op
+PASS
+ok  	github.com/chavacava/benchcomp/fixtures	7.379s
