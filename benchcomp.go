@@ -19,6 +19,7 @@ var (
 	changedOnly = flag.Bool("changed", false, "show only benchmarks that have changed")
 	magSort     = flag.Bool("mag", false, "sort benchmarks by magnitude of change")
 	best        = flag.Bool("best", false, "compare best times from old and new")
+	failOnDelta = flag.Bool("errdelta", false, "return error if there are delta")
 	tNsPerOp    = flag.Float64("tnsop", 0.0, "tolerance for deltas of ns/op")
 	tMbPerS     = flag.Float64("tmbs", 0.0, "tolerance for deltas of Mb/s")
 	tAllPerOp   = flag.Float64("tallocop", 0.0, "tolerance for deltas of allocs/op")
@@ -47,6 +48,10 @@ func main() {
 		flag.Usage()
 	}
 
+	if !*failOnDelta && (*tAllPerOp+*tBPerOp+*tMbPerS+*tNsPerOp) > 0 {
+		fmt.Fprint(os.Stderr, "tolerances flags are only valid when -errdelta is true\n")
+		os.Exit(2)
+	}
 	before := parseFile(flag.Arg(0))
 	after := parseFile(flag.Arg(1))
 
@@ -82,7 +87,7 @@ func main() {
 			}
 			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", cmp.Name(), formatNs(cmp.Before.NsPerOp), formatNs(cmp.After.NsPerOp), delta.PercentAsStr())
 
-			if delta.Percent() > *tNsPerOp {
+			if *failOnDelta && delta.Percent() > *tNsPerOp {
 				w.Flush()
 				fatal(fmt.Sprintf("benchcmp: %s ns/op delta between benchmarks", delta.PercentAsStr()))
 			}
@@ -104,7 +109,7 @@ func main() {
 			}
 			fmt.Fprintf(w, "%s\t%.2f\t%.2f\t%s\n", cmp.Name(), cmp.Before.MBPerS, cmp.After.MBPerS, delta.Multiple())
 
-			if delta.Percent() > *tMbPerS {
+			if *failOnDelta && delta.Percent() > *tMbPerS {
 				w.Flush()
 				fatal(fmt.Sprintf("benchcmp: %s Mb/s delta between benchmarks", delta.PercentAsStr()))
 			}
@@ -126,7 +131,7 @@ func main() {
 			}
 			fmt.Fprintf(w, "%s\t%d\t%d\t%s\n", cmp.Name(), cmp.Before.AllocsPerOp, cmp.After.AllocsPerOp, delta.PercentAsStr())
 
-			if delta.Percent() > *tAllPerOp {
+			if *failOnDelta && delta.Percent() > *tAllPerOp {
 				w.Flush()
 				fatal(fmt.Sprintf("benchcmp: %s allocs/op delta between benchmarks", delta.PercentAsStr))
 			}
@@ -148,7 +153,7 @@ func main() {
 			}
 			fmt.Fprintf(w, "%s\t%d\t%d\t%s\n", cmp.Name(), cmp.Before.AllocedBytesPerOp, cmp.After.AllocedBytesPerOp, cmp.DeltaAllocedBytesPerOp().PercentAsStr())
 
-			if delta.Percent() > *tBPerOp {
+			if *failOnDelta && delta.Percent() > *tBPerOp {
 				w.Flush()
 				fatal(fmt.Sprintf("benchcmp: %s bytes/op delta between benchmarks", delta.PercentAsStr))
 			}
