@@ -1,0 +1,6 @@
+goos: linux
+goarch: amd64
+pkg: github.com/chavacava/benchdiff/fixtures
+BenchmarkSliceAppend-4   	1000000000	         2.24 ns/op	       5 B/op	       0 allocs/op
+PASS
+ok  	github.com/chavacava/benchdiff/fixtures	2.594s
