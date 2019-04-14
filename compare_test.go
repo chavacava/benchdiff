@@ -41,7 +41,7 @@ func TestDelta(t *testing.T) {
 		if want, have := tt.changed, d.Changed(); want != have {
 			t.Errorf("%s.Changed(): want %t have %t", d, want, have)
 		}
-		if want, have := tt.pct, d.Percent(); want != have {
+		if want, have := tt.pct, d.PercentAsStr(); want != have {
 			t.Errorf("%s.Percent(): want %q have %q", d, want, have)
 		}
 		if want, have := tt.mult, d.Multiple(); want != have {
@@ -108,8 +108,8 @@ func TestCorrelate(t *testing.T) {
 	}
 }
 
-func TestBenchCmpSorting(t *testing.T) {
-	c := []BenchCmp{
+func TestBenchDiffSorting(t *testing.T) {
+	c := []BenchDiff{
 		{&parse.Benchmark{Name: "BenchmarkMuchFaster", NsPerOp: 10, Ord: 3}, &parse.Benchmark{Name: "BenchmarkMuchFaster", NsPerOp: 1}},
 		{&parse.Benchmark{Name: "BenchmarkSameB", NsPerOp: 5, Ord: 1}, &parse.Benchmark{Name: "BenchmarkSameB", NsPerOp: 5}},
 		{&parse.Benchmark{Name: "BenchmarkSameA", NsPerOp: 5, Ord: 2}, &parse.Benchmark{Name: "BenchmarkSameA", NsPerOp: 5}},
