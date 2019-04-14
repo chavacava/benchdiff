@@ -133,7 +133,7 @@ func main() {
 
 			if *failOnDelta && delta.Percent() > *tAllPerOp {
 				w.Flush()
-				fatal(fmt.Sprintf("benchdiff: %s allocs/op delta between benchmarks", delta.PercentAsStr))
+				fatal(fmt.Sprintf("benchdiff: %s allocs/op delta between benchmarks", delta.PercentAsStr()))
 			}
 		}
 	}
@@ -155,7 +155,7 @@ func main() {
 
 			if *failOnDelta && delta.Percent() > *tBPerOp {
 				w.Flush()
-				fatal(fmt.Sprintf("benchdiff: %s bytes/op delta between benchmarks", delta.PercentAsStr))
+				fatal(fmt.Sprintf("benchdiff: %s bytes/op delta between benchmarks", delta.PercentAsStr()))
 			}
 		}
 	}
