@@ -1,6 +1,6 @@
-# benchcmp
+# benchdiff
 
-`benchcmp` displays performance changes between benchmarks
+`benchdiff` displays performance changes between benchmarks
 
 This is a fork and **drop in replacement** of [`golang/tools/cmd/benchcmp`](https://github.com/golang/tools/tree/master/cmd/benchcmp) 
 
@@ -12,7 +12,7 @@ It adds the following functionalities:
 ## Usage
 
 ```
-usage: ./benchcomp old.txt new.txt
+usage: ./benchdiff old.txt new.txt
 
   -best
         compare best times from old and new
@@ -43,7 +43,7 @@ benchcmp will also compare memory allocations.
 Replacement of `golang/tools/cmd/benchcmp`
 
 ```
-$ benchcomp -best ./fixtures/example1.old ./fixtures/example1.new
+$ benchdiff -best ./fixtures/strconcat.old ./fixtures/strconcat.new
 benchmark                    old ns/op     new ns/op     delta
 BenchmarkConcatString-4      148           143           -3.38%
 BenchmarkConcatBuffer-4      8.78          8.91          +1.48%
@@ -65,18 +65,18 @@ $ echo $?
 Fail on positive deltas (performance regressions)
 
 ```
-$ benchcomp -errdelta ./fixtures/example1.old ./fixtures/example1.new
+$ benchdiff -errdelta ./fixtures/strconcat.old ./fixtures/strconcat.new
 benchmark                   old ns/op     new ns/op     delta
 BenchmarkConcatString-4     148           143           -3.38%
 BenchmarkConcatBuffer-4     8.78          8.91          +1.48%
-benchcmp: +1.48% ns/op delta between benchmarks
+benchdiff: +1.48% ns/op delta between benchmarks
 $ echo $?
 1
 ```
 Set a tolerance of 2% for deltas of ns/op
 
 ```
-$ benchcomp -errdelta -tnsop 2  ./fixtures/example1.old ./fixtures/example1.new
+$ benchdiff -errdelta -tnsop 2  ./fixtures/strconcat.old ./fixtures/strconcat.new
 benchmark                    old ns/op     new ns/op     delta
 BenchmarkConcatString-4      148           143           -3.38%
 BenchmarkConcatBuffer-4      8.78          8.91          +1.48%

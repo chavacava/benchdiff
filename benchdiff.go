@@ -30,10 +30,10 @@ const usageFooter = `
 Each input file should be from:
 	go test -run=NONE -bench=. > [old,new].txt
 
-Benchcmp compares old and new for each benchmark.
+benchdiff compares old and new for each benchmark.
 
 If -test.benchmem=true is added to the "go test" command
-benchcmp will also compare memory allocations.
+benchdiff will also compare memory allocations.
 `
 
 func main() {
@@ -62,7 +62,7 @@ func main() {
 	}
 
 	if len(cmps) == 0 {
-		fatal("benchcmp: no repeated benchmarks")
+		fatal("benchdiff: no repeated benchmarks")
 	}
 
 	w := new(tabwriter.Writer)
@@ -89,7 +89,7 @@ func main() {
 
 			if *failOnDelta && delta.Percent() > *tNsPerOp {
 				w.Flush()
-				fatal(fmt.Sprintf("benchcmp: %s ns/op delta between benchmarks", delta.PercentAsStr()))
+				fatal(fmt.Sprintf("benchdiff: %s ns/op delta between benchmarks", delta.PercentAsStr()))
 			}
 		}
 	}
@@ -111,7 +111,7 @@ func main() {
 
 			if *failOnDelta && delta.Percent() > *tMbPerS {
 				w.Flush()
-				fatal(fmt.Sprintf("benchcmp: %s Mb/s delta between benchmarks", delta.PercentAsStr()))
+				fatal(fmt.Sprintf("benchdiff: %s Mb/s delta between benchmarks", delta.PercentAsStr()))
 			}
 		}
 	}
@@ -133,7 +133,7 @@ func main() {
 
 			if *failOnDelta && delta.Percent() > *tAllPerOp {
 				w.Flush()
-				fatal(fmt.Sprintf("benchcmp: %s allocs/op delta between benchmarks", delta.PercentAsStr))
+				fatal(fmt.Sprintf("benchdiff: %s allocs/op delta between benchmarks", delta.PercentAsStr))
 			}
 		}
 	}
@@ -155,7 +155,7 @@ func main() {
 
 			if *failOnDelta && delta.Percent() > *tBPerOp {
 				w.Flush()
-				fatal(fmt.Sprintf("benchcmp: %s bytes/op delta between benchmarks", delta.PercentAsStr))
+				fatal(fmt.Sprintf("benchdiff: %s bytes/op delta between benchmarks", delta.PercentAsStr))
 			}
 		}
 	}

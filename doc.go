@@ -4,9 +4,9 @@
 
 /*
 
-The benchcmp command displays performance changes between benchmarks.
+The benchdiff command displays performance changes between benchmarks.
 
-Benchcmp parses the output of two 'go test' benchmark runs,
+benchdiff parses the output of two 'go test' benchmark runs,
 correlates the results per benchmark, and displays the deltas.
 
 To measure the performance impact of a change, use 'go test'
@@ -16,14 +16,14 @@ to run benchmarks before and after the change:
 	# make changes
 	go test -run=NONE -bench=. ./... > new.txt
 
-Then feed the benchmark results to benchcmp:
+Then feed the benchmark results to benchdiff:
 
-	benchcmp old.txt new.txt
+	benchdiff old.txt new.txt
 
-Benchcmp will summarize and display the performance changes,
+benchdiff will summarize and display the performance changes,
 in a format like this:
 
-	$ benchcmp old.txt new.txt
+	$ benchdiff old.txt new.txt
 	benchmark           old ns/op     new ns/op     delta
 	BenchmarkConcat     523           68.6          -86.88%
 
@@ -34,4 +34,4 @@ in a format like this:
 	BenchmarkConcat     80            48            -40.00%
 
 */
-package main // import "github.com/chavacava/benchcmp"
+package main // import "github.com/chavacava/benchdiff"
