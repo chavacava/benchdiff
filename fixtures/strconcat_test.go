@@ -1,5 +1,8 @@
 package fixtures
 
+// Borrowed from https://stackimpact.com/blog/practical-golang-benchmarks/
+// by Dmitri Melikyan (https://github.com/dmelikyan)
+
 import (
 	"bytes"
 	"strings"
