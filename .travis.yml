@@ -13,7 +13,7 @@ env:
 # You don't need to test on very old versions of the Go compiler. It's the user's
 # responsibility to keep their compiler up to date.
 go:
-  - 1.12.x
+  - 1.12
 
 # Only clone the most recent commit.
 git:
@@ -32,6 +32,6 @@ before_script:
 # failing test, we want to see both. Configure golangci-lint with a
 # .golangci.yml file at the top level of your repo.
 script:
-  - revive -config ./revive.conf.toml ./...    # run a bunch of code checkers/linters in parallel
+  - revive -config ./revive.conf.toml -exclude ./fixtures/... ./...    # run a bunch of code checkers/linters in parallel
   - make test
   - make build
