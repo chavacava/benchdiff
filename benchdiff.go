@@ -55,13 +55,13 @@ func main() {
 	before := parseFile(flag.Arg(0))
 	after := parseFile(flag.Arg(1))
 
-	cmps, warnings := Correlate(before, after)
+	diffs, warnings := Correlate(before, after)
 
 	for _, warn := range warnings {
 		fmt.Fprintln(os.Stderr, warn)
 	}
 
-	if len(cmps) == 0 {
+	if len(diffs) == 0 {
 		fatal("benchdiff: no repeated benchmarks")
 	}
 
@@ -72,20 +72,20 @@ func main() {
 	var header bool // Has the header has been displayed yet for a given block?
 
 	if *magSort {
-		sort.Sort(ByDeltaNsPerOp(cmps))
+		sort.Sort(ByDeltaNsPerOp(diffs))
 	} else {
-		sort.Sort(ByParseOrder(cmps))
+		sort.Sort(ByParseOrder(diffs))
 	}
-	for _, cmp := range cmps {
-		if !cmp.Measured(parse.NsPerOp) {
+	for _, diff := range diffs {
+		if !diff.Measured(parse.NsPerOp) {
 			continue
 		}
-		if delta := cmp.DeltaNsPerOp(); !*changedOnly || delta.Changed() {
+		if delta := diff.DeltaNsPerOp(); !*changedOnly || delta.Changed() {
 			if !header {
 				fmt.Fprint(w, "benchmark\told ns/op\tnew ns/op\tdelta\n")
 				header = true
 			}
-			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", cmp.Name(), formatNs(cmp.Before.NsPerOp), formatNs(cmp.After.NsPerOp), delta.PercentAsStr())
+			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", diff.Name(), formatNs(diff.Before.NsPerOp), formatNs(diff.After.NsPerOp), delta.PercentAsStr())
 
 			if *failOnDelta && delta.Percent() > *tNsPerOp {
 				w.Flush()
@@ -96,18 +96,18 @@ func main() {
 
 	header = false
 	if *magSort {
-		sort.Sort(ByDeltaMBPerS(cmps))
+		sort.Sort(ByDeltaMBPerS(diffs))
 	}
-	for _, cmp := range cmps {
-		if !cmp.Measured(parse.MBPerS) {
+	for _, diff := range diffs {
+		if !diff.Measured(parse.MBPerS) {
 			continue
 		}
-		if delta := cmp.DeltaMBPerS(); !*changedOnly || delta.Changed() {
+		if delta := diff.DeltaMBPerS(); !*changedOnly || delta.Changed() {
 			if !header {
 				fmt.Fprint(w, "\nbenchmark\told MB/s\tnew MB/s\tspeedup\n")
 				header = true
 			}
-			fmt.Fprintf(w, "%s\t%.2f\t%.2f\t%s\n", cmp.Name(), cmp.Before.MBPerS, cmp.After.MBPerS, delta.Multiple())
+			fmt.Fprintf(w, "%s\t%.2f\t%.2f\t%s\n", diff.Name(), diff.Before.MBPerS, diff.After.MBPerS, delta.Multiple())
 
 			if *failOnDelta && delta.Percent() > *tMbPerS {
 				w.Flush()
@@ -118,18 +118,18 @@ func main() {
 
 	header = false
 	if *magSort {
-		sort.Sort(ByDeltaAllocsPerOp(cmps))
+		sort.Sort(ByDeltaAllocsPerOp(diffs))
 	}
-	for _, cmp := range cmps {
-		if !cmp.Measured(parse.AllocsPerOp) {
+	for _, diff := range diffs {
+		if !diff.Measured(parse.AllocsPerOp) {
 			continue
 		}
-		if delta := cmp.DeltaAllocsPerOp(); !*changedOnly || delta.Changed() {
+		if delta := diff.DeltaAllocsPerOp(); !*changedOnly || delta.Changed() {
 			if !header {
 				fmt.Fprint(w, "\nbenchmark\told allocs\tnew allocs\tdelta\n")
 				header = true
 			}
-			fmt.Fprintf(w, "%s\t%d\t%d\t%s\n", cmp.Name(), cmp.Before.AllocsPerOp, cmp.After.AllocsPerOp, delta.PercentAsStr())
+			fmt.Fprintf(w, "%s\t%d\t%d\t%s\n", diff.Name(), diff.Before.AllocsPerOp, diff.After.AllocsPerOp, delta.PercentAsStr())
 
 			if *failOnDelta && delta.Percent() > *tAllPerOp {
 				w.Flush()
@@ -140,18 +140,18 @@ func main() {
 
 	header = false
 	if *magSort {
-		sort.Sort(ByDeltaAllocedBytesPerOp(cmps))
+		sort.Sort(ByDeltaAllocedBytesPerOp(diffs))
 	}
-	for _, cmp := range cmps {
-		if !cmp.Measured(parse.AllocedBytesPerOp) {
+	for _, diff := range diffs {
+		if !diff.Measured(parse.AllocedBytesPerOp) {
 			continue
 		}
-		if delta := cmp.DeltaAllocedBytesPerOp(); !*changedOnly || delta.Changed() {
+		if delta := diff.DeltaAllocedBytesPerOp(); !*changedOnly || delta.Changed() {
 			if !header {
 				fmt.Fprint(w, "\nbenchmark\told bytes\tnew bytes\tdelta\n")
 				header = true
 			}
-			fmt.Fprintf(w, "%s\t%d\t%d\t%s\n", cmp.Name(), cmp.Before.AllocedBytesPerOp, cmp.After.AllocedBytesPerOp, cmp.DeltaAllocedBytesPerOp().PercentAsStr())
+			fmt.Fprintf(w, "%s\t%d\t%d\t%s\n", diff.Name(), diff.Before.AllocedBytesPerOp, diff.After.AllocedBytesPerOp, diff.DeltaAllocedBytesPerOp().PercentAsStr())
 
 			if *failOnDelta && delta.Percent() > *tBPerOp {
 				w.Flush()
