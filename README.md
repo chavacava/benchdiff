@@ -9,6 +9,22 @@ It adds the following functionalities:
 * Can be configured to return error code != 0 if there are positive deltas (performance regressions) between the benchmarks
 * Allows to set tolerance of deltas
 
+## Installation
+
+```
+go get github.com/chavacava/benchdiff
+```
+
+Requirements:
+
+* GO >= 1.11 installed
+
+### Building from sources
+
+1. clone the repo: `git clone https://github.com/chavacava/benchdiff.git`
+2. set `GO111MODULE=on`
+3. `make build` will generate an executable under `./bin`
+
 ## Usage
 
 ```
