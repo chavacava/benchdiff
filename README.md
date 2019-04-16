@@ -4,7 +4,7 @@
 
 `benchdiff` displays performance changes between benchmarks
 
-This is a fork and **drop in replacement** of [`golang/tools/cmd/benchcmp`](https://github.com/golang/tools/tree/master/cmd/benchcmp) 
+This is a fork and **drop-in replacement** of [`golang/tools/cmd/benchcmp`](https://github.com/golang/tools/tree/master/cmd/benchcmp) 
 
 It adds the following functionalities:
 
